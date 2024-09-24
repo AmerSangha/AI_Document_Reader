@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Summary</title>
+    <style>
+        /* Basic styles for the layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #summary {
+            margin-bottom: 20px;
+        }
+
+        /* Styles for the chatbox */
+        #chat-container {
+            margin-top: 30px;
+        }
+
+        #question {
+            width: 80%;
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        /* Dedicated response box styles */
+        #chat-box {
+            margin-top: 20px;
+            padding: 15px;
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        /* Style for user and AI messages */
+        .user-message {
+            color: blue;
+        }
+
+        .ai-response {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Document Summary</h1>
+    <p id="summary">{{ summary }}</p>
+
+    <!-- Chatbox for asking questions -->
+    <div id="chat-container">
+        <h3>Ask Questions:</h3>
+        <input type="text" id="question" placeholder="Type your question here">
+        <button onclick="sendQuestion()">Ask</button>
+    </div>
+
+    <!-- Chatbox response area -->
+    <div id="chat-box">
+        <p><strong>Chat Responses:</strong></p>
+        <!-- Responses will appear here -->
+    </div>
+
+    <!-- Button to go back to the upload page (index.html) -->
+    <button onclick="goBack()">Return to Upload Page</button>
+
+    <script>
+        function sendQuestion() {
+            const question = document.getElementById("question").value;
+            const summary = document.getElementById("summary").textContent;
+
+            fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ question: question, summary: summary }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const chatBox = document.getElementById("chat-box");
+                const userMessage = `<p class="user-message"><strong>You:</strong> ${question}</p>`;
+                const aiResponse = `<p class="ai-response"><strong>AI:</strong> ${data.answer}</p>`;
+                chatBox.innerHTML += userMessage + aiResponse;
+                document.getElementById("question").value = ''; // Clear input
+                chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+            });
+        }
+
+        // JavaScript function to navigate back to the home page (index.html)
+        function goBack() {
+            window.location.href = '/';  // Redirects to the home page
+        }
+    </script>
+</body>
+</html>
