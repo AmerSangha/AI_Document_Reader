@@ -1,0 +1,5 @@
+Flask==2.0.1
+transformers==4.21.1
+PyPDF2==1.26.0
+python-docx==0.8.11
+torch==1.10.2  # Adjust the version based on your environment
